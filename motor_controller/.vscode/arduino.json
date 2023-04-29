@@ -1,0 +1,5 @@
+{
+    "board": "arduino:mbed_nano:nanorp2040connect",
+    "sketch": "main.ino",
+    "port": "COM3"
+}
