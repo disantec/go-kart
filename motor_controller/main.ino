@@ -1,37 +1,57 @@
-/*
-  Blink
+// This code is to run a all wheel drive go kart using brushless dc motors controlled via PWM
 
-  Turns an LED on for one second, then off for one second, repeatedly.
+// Import the necessary libraries
+#include <Arduino.h>
+#include <Servo.h>
 
-  Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
-  it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
-  the correct LED pin independent of which board is used.
-  If you want to know what pin the on-board LED is connected to on your Arduino
-  model, check the Technical Specs of your board at:
-  https://www.arduino.cc/en/Main/Products
+const int motorPin = 9;
+const int motorThrottlePin = A0;
+const int modePotPin = A1;
 
-  modified 8 May 2014
-  by Scott Fitzgerald
-  modified 2 Sep 2016
-  by Arturo Guadalupi
-  modified 8 Sep 2016
-  by Colby Newman
+// Create a Servo object for the motor
+Servo motor;
 
-  This example code is in the public domain.
-
-  https://www.arduino.cc/en/Tutorial/BuiltInExamples/Blink
-*/
+// Define the variables for the motor speed and direction
+int motorSpeedValue = 0;
+int motorDirection = 1;
 
 // the setup function runs once when you press reset or power the board
+
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
+  // Attach the motor to the motorPin
+  motor.attach(motorPin);
+
+  // Set the motor speed to 0 on startup
+  motorSpeedValue = 0;
+
+  // Set the motor direction to neutral on startup
+  motorDirection = 0;
+  
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(1000);                      // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-  delay(1000);                      // wait for a second
+  // Read the value of the mode potentiometer
+  int modePotValue = analogRead(modePotPin);
+
+
+  // If the mode potentiometer is at a low voltage, turn off the motor
+  if (modePotValue < 512) {
+    motorDirection = 0;
+  }
+
+  // If the mode potentiometer is at a medium voltage, turn the motor mode
+  if (modePotValue > 512 && modePotValue < 1023) {
+    motorDirection = 1;
+  }
+
+  // If the mode potentiometer is at a high voltage, turn the motor backward
+  if (modePotValue > 1023) {
+    motorDirection = -1;
+  }
+
+  motorSpeedValue=analogRead(motorThrottlePin)*motorDirection;
+
+  // Set the motor speed
+  motor.write(motorSpeedValue);
 }

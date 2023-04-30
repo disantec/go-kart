@@ -1,5 +1,7 @@
 {
     "board": "arduino:mbed_nano:nanorp2040connect",
-    "sketch": "main.ino",
-    "port": "COM3"
+    "sketch": "motor_controller.ino",
+    "port": "COM3",
+    "programmer": "cmsis-dap",
+    "output": "//build"
 }
